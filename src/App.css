@@ -264,6 +264,65 @@
   margin-top: 1rem;
 }
 
+.booking-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+  max-width: 28rem;
+  margin: 1.5rem auto 0;
+  padding: clamp(1rem, 3vw, 1.5rem);
+  text-align: left;
+  background-color: var(--color-light-gray);
+  border-radius: var(--radius-ui);
+}
+
+.booking-form label {
+  color: var(--color-green);
+  font-weight: 600;
+}
+
+.booking-form input,
+.booking-form select {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 0.625rem;
+  font: inherit;
+  color: var(--color-charcoal);
+  background-color: var(--color-background);
+  border: 1px solid var(--color-green);
+  border-radius: var(--radius-ui);
+}
+
+.booking-submit {
+  min-height: 44px;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--color-charcoal);
+  background-color: var(--color-yellow);
+  border: 1px solid var(--color-charcoal);
+  border-radius: var(--radius-ui);
+  cursor: pointer;
+}
+
+.booking-submit:hover {
+  text-decoration: underline;
+}
+
+.booking-submit:active {
+  color: var(--color-background);
+  background-color: var(--color-green);
+}
+
+.booking-form input:focus-visible,
+.booking-form select:focus-visible,
+.booking-submit:focus-visible {
+  outline: 3px solid var(--color-green);
+  outline-offset: 3px;
+}
+
 @media (max-width: 40rem) {
   #root {
     gap: 1rem;
