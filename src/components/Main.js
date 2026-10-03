@@ -1,6 +1,6 @@
 function Main() {
   return (
-    <main id="home">
+    <main className="site-main" id="home">
       <h1>Welcome to Little Lemon</h1>
     </main>
   );
