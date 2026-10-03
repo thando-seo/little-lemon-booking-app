@@ -5,6 +5,11 @@ import App from '../App';
 import BookingForm from './BookingForm';
 import { initializeTimes } from './Main';
 
+test('renders the BookingForm Choose date label', () => {
+  render(<BookingForm availableTimes={initializeTimes()} dispatch={jest.fn()} />);
+  expect(screen.getByText('Choose date', { exact: true })).toBeInTheDocument();
+});
+
 test('booking route renders labeled fields with sensible initial values', () => {
   render(<MemoryRouter initialEntries={['/booking']}><App /></MemoryRouter>);
   expect(screen.getByRole('heading', { name: 'Reserve a Table' })).toBeInTheDocument();

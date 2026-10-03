@@ -15,3 +15,10 @@ test('updateTimes preserves state for unrelated actions', () => {
   const times = initializeTimes();
   expect(updateTimes(times, { type: 'UNKNOWN' })).toBe(times);
 });
+
+test('updateTimes returns the supplied state rather than recreating the initial times', () => {
+  const suppliedTimes = ['18:00', '20:00'];
+  const result = updateTimes(suppliedTimes, { type: 'UPDATE_DATE', date: '2026-11-15' });
+  expect(result).toEqual(suppliedTimes);
+  expect(result).toBe(suppliedTimes);
+});

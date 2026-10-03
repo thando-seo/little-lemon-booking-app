@@ -11,11 +11,8 @@ export function initializeTimes() {
   return ['17:00', '18:00', '19:00', '20:00', '21:00', '22:00'];
 }
 
-export function updateTimes(state, action) {
-  if (action.type === 'UPDATE_DATE') {
-    // This exercise uses the same times for every selected date.
-    return initializeTimes();
-  }
+export function updateTimes(state) {
+  // Keep the supplied times unchanged until date-dependent logic is introduced.
   return state;
 }
 
