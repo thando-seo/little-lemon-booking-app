@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
 import BookingForm from './BookingForm';
+import { initializeTimes } from './Main';
 
 test('booking route renders labeled fields with sensible initial values', () => {
   render(<MemoryRouter initialEntries={['/booking']}><App /></MemoryRouter>);
@@ -18,7 +19,7 @@ test('booking route renders labeled fields with sensible initial values', () => 
 });
 
 test('renders all six available time options', () => {
-  render(<BookingForm />);
+  render(<BookingForm availableTimes={initializeTimes()} dispatch={jest.fn()} />);
   const options = within(screen.getByLabelText('Choose time')).getAllByRole('option');
   expect(options.map((option) => option.value)).toEqual([
     '17:00', '18:00', '19:00', '20:00', '21:00', '22:00',
@@ -26,7 +27,7 @@ test('renders all six available time options', () => {
 });
 
 test('all controlled fields reflect edits without changing available times', () => {
-  render(<BookingForm />);
+  render(<MemoryRouter initialEntries={['/booking']}><App /></MemoryRouter>);
   fireEvent.change(screen.getByLabelText('Choose date'), { target: { value: '2026-11-15' } });
   userEvent.selectOptions(screen.getByLabelText('Choose time'), '20:00');
   userEvent.clear(screen.getByLabelText('Number of guests'));
@@ -40,10 +41,18 @@ test('all controlled fields reflect edits without changing available times', () 
 });
 
 test('submission prevents browser navigation and preserves the form', () => {
-  render(<BookingForm />);
+  render(<BookingForm availableTimes={initializeTimes()} dispatch={jest.fn()} />);
   const form = screen.getByRole('form', { name: 'Table reservation' });
   const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
   fireEvent(form, submitEvent);
   expect(submitEvent.defaultPrevented).toBe(true);
   expect(screen.getByLabelText('Choose time')).toHaveValue('17:00');
+});
+
+test('date changes dispatch the selected date while keeping local date state', () => {
+  const dispatch = jest.fn();
+  render(<BookingForm availableTimes={initializeTimes()} dispatch={dispatch} />);
+  fireEvent.change(screen.getByLabelText('Choose date'), { target: { value: '2026-11-15' } });
+  expect(screen.getByLabelText('Choose date')).toHaveValue('2026-11-15');
+  expect(dispatch).toHaveBeenCalledWith({ type: 'UPDATE_DATE', date: '2026-11-15' });
 });
