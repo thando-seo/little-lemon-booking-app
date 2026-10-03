@@ -104,6 +104,166 @@
   font-size: 0.875rem;
 }
 
+.action-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-ui);
+  background-color: var(--color-yellow);
+  color: var(--color-charcoal);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.action-link:hover {
+  text-decoration: underline;
+}
+
+.action-link:focus-visible {
+  outline: 3px solid var(--color-charcoal);
+  outline-offset: 3px;
+}
+
+.action-link:active {
+  background-color: var(--color-light-gray);
+}
+
+.hero,
+.chicago {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 2rem;
+  text-align: left;
+}
+
+.hero {
+  padding: clamp(1rem, 3vw, 2rem);
+  border-radius: var(--radius-ui);
+  background-color: var(--color-green);
+}
+
+.hero h1 {
+  color: var(--color-yellow);
+}
+
+.hero h2,
+.hero p {
+  color: var(--color-background);
+}
+
+.hero .action-link:focus-visible {
+  outline-color: var(--color-background);
+}
+
+.hero-image,
+.chicago-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-ui);
+}
+
+.hero-image {
+  object-position: center 65%;
+}
+
+.home-section {
+  margin-top: 3rem;
+  text-align: left;
+}
+
+.section-heading,
+.special-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.section-heading {
+  margin-bottom: 1.5rem;
+}
+
+.section-heading h2,
+.special-heading h3 {
+  margin: 0;
+}
+
+.specials-grid,
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.special-card {
+  background-color: var(--color-light-gray);
+  border-radius: var(--radius-ui);
+}
+
+.special-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  object-fit: cover;
+  border-radius: var(--radius-ui) var(--radius-ui) 0 0;
+}
+
+.special-content,
+.testimonial-card {
+  padding: 1.25rem;
+}
+
+.special-content p {
+  margin: 1rem 0 0;
+}
+
+.special-price {
+  font-weight: 600;
+}
+
+.testimonials {
+  padding: clamp(1rem, 3vw, 2rem);
+  background-color: var(--color-light-gray);
+  border-radius: var(--radius-ui);
+}
+
+.testimonial-card {
+  background-color: var(--color-background);
+  border-radius: var(--radius-ui);
+}
+
+.testimonial-card blockquote {
+  margin: 0;
+}
+
+.testimonial-card blockquote p {
+  margin: 0;
+}
+
+.rating {
+  color: var(--color-green);
+  letter-spacing: 0.1em;
+}
+
+.demo-note {
+  font-size: 0.875rem;
+}
+
+.page-shell {
+  max-width: 45rem;
+  margin-inline: auto;
+}
+
+.page-shell p {
+  margin-top: 1rem;
+}
+
 @media (max-width: 40rem) {
   #root {
     gap: 1rem;
@@ -113,5 +273,21 @@
   .site-nav-list {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hero,
+  .chicago,
+  .specials-grid,
+  .testimonials-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero,
+  .chicago {
+    gap: 1.5rem;
+  }
+
+  .home-section {
+    margin-top: 2rem;
   }
 }
