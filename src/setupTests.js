@@ -9,9 +9,10 @@ import { TextEncoder, TextDecoder } from 'util';
 global.TextEncoder = TextEncoder;
 global.TextDecoder = TextDecoder;
 
-// Jest does not load the external script from public/index.html.
+// Jest does not load the API script from public/index.html.
 beforeEach(() => {
   global.fetchAPI = jest.fn(() => [
     '17:00', '18:00', '19:00', '20:00', '21:00', '22:00',
   ]);
+  global.submitAPI = jest.fn(() => true);
 });

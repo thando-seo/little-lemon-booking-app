@@ -45,13 +45,21 @@ test('all controlled fields reflect edits without changing available times', () 
   expect(within(screen.getByLabelText('Choose time')).getAllByRole('option')).toHaveLength(6);
 });
 
-test('submission prevents browser navigation and preserves the form', () => {
-  render(<BookingForm availableTimes={initializeTimes()} dispatch={jest.fn()} />);
+test('submission prevents browser reload and passes the controlled form values', () => {
+  const submitForm = jest.fn();
+  render(<BookingForm availableTimes={initializeTimes()} dispatch={jest.fn()} submitForm={submitForm} />);
+  fireEvent.change(screen.getByLabelText('Choose date'), { target: { value: '2026-11-15' } });
+  userEvent.selectOptions(screen.getByLabelText('Choose time'), '20:00');
+  userEvent.clear(screen.getByLabelText('Number of guests'));
+  userEvent.type(screen.getByLabelText('Number of guests'), '4');
+  userEvent.selectOptions(screen.getByLabelText('Occasion'), 'Anniversary');
   const form = screen.getByRole('form', { name: 'Table reservation' });
   const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
   fireEvent(form, submitEvent);
   expect(submitEvent.defaultPrevented).toBe(true);
-  expect(screen.getByLabelText('Choose time')).toHaveValue('17:00');
+  expect(submitForm).toHaveBeenCalledTimes(1);
+  expect(submitForm).toHaveBeenCalledWith({ date: '2026-11-15', time: '20:00', guests: 4, occasion: 'Anniversary' });
+  expect(screen.getByLabelText('Choose time')).toHaveValue('20:00');
 });
 
 test('date changes dispatch the selected date while keeping local date state', () => {
