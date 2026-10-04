@@ -16,11 +16,17 @@ test('initializeTimes calls fetchAPI with today and returns its available times'
   expect(date.getTime()).toBeLessThanOrEqual(Date.now());
 });
 
-test.each(['2026-11-15', '2026-11-16'])('updateTimes fetches availability for selected date %s', (date) => {
+test.each(['2026-11-15', '2026-11-16', '2026-11-18'])('updateTimes fetches availability for selected date %s', (date) => {
   const apiTimes = ['18:30', '21:00'];
   global.fetchAPI.mockReturnValue(apiTimes);
   expect(updateTimes(['17:00'], { type: 'UPDATE_DATE', date })).toBe(apiTimes);
   const [year, month, day] = date.split('-').map(Number);
+  expect(global.fetchAPI).toHaveBeenCalledTimes(1);
+  const dateArg = global.fetchAPI.mock.calls[0][0];
+  expect(dateArg).toBeInstanceOf(Date);
+  expect(dateArg.getFullYear()).toBe(year);
+  expect(dateArg.getMonth()).toBe(month - 1);
+  expect(dateArg.getDate()).toBe(day);
   expect(global.fetchAPI).toHaveBeenCalledWith(new Date(year, month - 1, day));
 });
 
