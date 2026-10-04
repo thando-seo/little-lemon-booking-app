@@ -39,7 +39,8 @@ function BookingForm({ availableTimes, dispatch, submitForm }) {
   }
 
   return (
-    <form className="booking-form" aria-label="Table reservation" onSubmit={handleSubmit}>
+    <form className="booking-form" aria-label="Table reservation" aria-describedby="booking-instructions" onSubmit={handleSubmit}>
+      <p id="booking-instructions">All fields are required. Choose today or a future date and reserve for 1–10 guests.</p>
       <label htmlFor="res-date">Choose date</label>
       <input type="date" id="res-date" required min={todayString} value={date} onChange={handleDateChange} />
 
@@ -59,7 +60,9 @@ function BookingForm({ availableTimes, dispatch, submitForm }) {
         <option value="Anniversary">Anniversary</option>
       </select>
 
-      <button type="submit" className="booking-submit" disabled={!isFormValid}>Make Your Reservation</button>
+      <button type="submit" className="booking-submit" disabled={!isFormValid} aria-label="On Click" aria-labelledby="booking-submit-label">
+        <span id="booking-submit-label">Make Your Reservation</span>
+      </button>
     </form>
   );
 }

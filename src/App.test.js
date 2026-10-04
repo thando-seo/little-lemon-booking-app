@@ -19,12 +19,24 @@ test('navigation links point to the six routes', () => {
   Object.entries(destinations).forEach(([name, path]) => {
     expect(nav.getByRole('link', { name, exact: true })).toHaveAttribute('href', path);
   });
+  expect(nav.getByRole('link', { name: 'Home', exact: true })).toHaveAttribute('aria-current', 'page');
+  expect(nav.getByRole('link', { name: 'Reservations' })).not.toHaveAttribute('aria-current');
+});
+
+test('keyboard users can reach a skip link targeting the main landmark', () => {
+  render(<MemoryRouter><App /></MemoryRouter>);
+  userEvent.tab();
+  const skipLink = screen.getByRole('link', { name: 'Skip to main content' });
+  expect(skipLink).toHaveFocus();
+  expect(skipLink).toHaveAttribute('href', `#${screen.getByRole('main').id}`);
+  expect(screen.getByRole('main')).toHaveAttribute('tabindex', '-1');
 });
 
 test('reservation call to action opens the booking page', async () => {
   render(<MemoryRouter><App /></MemoryRouter>);
   userEvent.click(screen.getByRole('link', { name: 'Reserve a Table' }));
   expect(await screen.findByRole('heading', { level: 1, name: 'Reserve a Table' })).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Reservations' })).toHaveAttribute('aria-current', 'page');
   expect(screen.queryByRole('heading', { name: /this week’s specials/i })).not.toBeInTheDocument();
 });
 

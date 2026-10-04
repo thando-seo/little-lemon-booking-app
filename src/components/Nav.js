@@ -1,15 +1,15 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 function Nav() {
   return (
     <nav className="site-nav" aria-label="Primary navigation">
       <ul className="site-nav-list">
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/about">About</Link></li>
-        <li><Link to="/menu">Menu</Link></li>
-        <li><Link to="/booking">Reservations</Link></li>
-        <li><Link to="/order-online">Order Online</Link></li>
-        <li><Link to="/login">Login</Link></li>
+        <li><NavLink to="/" end>Home</NavLink></li>
+        <li><NavLink to="/about">About</NavLink></li>
+        <li><NavLink to="/menu">Menu</NavLink></li>
+        <li><NavLink to="/booking">Reservations</NavLink></li>
+        <li><NavLink to="/order-online">Order Online</NavLink></li>
+        <li><NavLink to="/login">Login</NavLink></li>
       </ul>
     </nav>
   );

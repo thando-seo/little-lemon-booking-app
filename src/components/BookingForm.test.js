@@ -97,6 +97,10 @@ test('fields have HTML5 validation attributes and the expected occasion options'
   expect(screen.getByLabelText('Choose date')).toHaveAttribute('type', 'date');
   expect(screen.getByLabelText('Choose date')).toHaveAttribute('min', '2026-10-04');
   expect(screen.getByLabelText('Number of guests')).toHaveAttribute('type', 'number');
+  expect(screen.getByRole('form', { name: 'Table reservation' })).toHaveAccessibleDescription(
+    'All fields are required. Choose today or a future date and reserve for 1–10 guests.'
+  );
+  expect(screen.getByRole('button', { name: 'Make Your Reservation' })).toHaveAttribute('aria-label', 'On Click');
   const occasion = screen.getByLabelText('Occasion');
   expect(occasion.tagName).toBe('SELECT');
   expect(within(occasion).getAllByRole('option').map((option) => ({
@@ -106,6 +110,14 @@ test('fields have HTML5 validation attributes and the expected occasion options'
     { value: 'Anniversary', label: 'Anniversary' },
   ]);
   expect(screen.getByRole('button', { name: 'Make Your Reservation' })).toBeDisabled();
+});
+
+test('clicking form labels focuses their associated controls', () => {
+  render(<BookingForm availableTimes={['17:00']} dispatch={jest.fn()} />);
+  ['Choose date', 'Choose time', 'Number of guests', 'Occasion'].forEach((label) => {
+    userEvent.click(screen.getByText(label, { selector: 'label' }));
+    expect(screen.getByLabelText(label)).toHaveFocus();
+  });
 });
 
 test.each(['', '0', '11', '1.5'])('invalid guest value %s disables submission and cannot bypass the submit guard', (guests) => {

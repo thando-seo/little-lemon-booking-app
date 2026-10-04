@@ -56,6 +56,7 @@ test('successful API submission navigates to confirmation', async () => {
   userEvent.click(screen.getByRole('button', { name: 'Make Your Reservation' }));
   expect(global.submitAPI).toHaveBeenCalledWith({ date: '2026-11-15', time: '17:00', guests: 1, occasion: 'Birthday' });
   expect(await screen.findByRole('heading', { name: 'Booking Confirmed!' })).toBeInTheDocument();
+  expect(screen.getByRole('heading', { name: 'Booking Confirmed!' })).toHaveFocus();
   expect(screen.queryByRole('form', { name: 'Table reservation' })).not.toBeInTheDocument();
   expect(screen.getAllByRole('main')).toHaveLength(1);
 });
