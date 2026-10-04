@@ -45,9 +45,23 @@ test.each([
   ['/menu', 'Our Menu'],
   ['/booking', 'Reserve a Table'],
   ['/order-online', 'Order Online'],
-  ['/login', 'Login'],
+  ['/login', 'Customer Login'],
 ])('renders %s directly', (path, heading) => {
   render(<MemoryRouter initialEntries={[path]}><App /></MemoryRouter>);
   expect(screen.getByRole('heading', { level: 1, name: heading })).toBeInTheDocument();
   expect(screen.getAllByRole('main')).toHaveLength(1);
+});
+
+test('menu presents the sample dishes with descriptions, prices, and images', () => {
+  render(<MemoryRouter initialEntries={['/menu']}><App /></MemoryRouter>);
+  expect(screen.getByText('Sample menu and prices for this capstone project.')).toBeInTheDocument();
+  const cards = screen.getAllByRole('article');
+  expect(cards).toHaveLength(3);
+  [['Greek Salad', '$12.99'], ['Bruschetta', '$5.99'], ['Lemon Dessert', '$5.00']].forEach(([name, price], index) => {
+    expect(within(cards[index]).getByRole('heading', { level: 2, name })).toBeInTheDocument();
+    expect(within(cards[index]).getByText(price)).toBeInTheDocument();
+    expect(within(cards[index]).getByRole('img')).toHaveAttribute('alt', expect.any(String));
+  });
+  userEvent.click(screen.getByRole('link', { name: 'Reserve a Table' }));
+  expect(screen.getByRole('form', { name: 'Table reservation' })).toBeInTheDocument();
 });

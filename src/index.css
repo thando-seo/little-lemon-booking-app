@@ -84,6 +84,17 @@ img {
   height: auto;
 }
 
+a {
+  color: var(--color-green);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+a:focus-visible {
+  outline: 3px solid var(--color-green);
+  outline-offset: 3px;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;

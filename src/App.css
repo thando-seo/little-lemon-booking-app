@@ -86,8 +86,7 @@
 }
 
 .site-nav-list a[aria-current="page"] {
-  text-decoration: underline;
-  text-underline-offset: 0.25em;
+  box-shadow: inset 0 -3px 0 var(--color-green);
 }
 
 .site-nav-list a:focus-visible {
@@ -137,10 +136,30 @@
   color: var(--color-charcoal);
   font-weight: 600;
   text-decoration: none;
+  cursor: pointer;
 }
 
-.action-link:hover {
-  text-decoration: underline;
+.action-link:hover,
+.action-link:focus-visible,
+button:enabled:hover,
+button:enabled:focus-visible,
+input[type="submit"]:enabled:hover,
+input[type="submit"]:enabled:focus-visible {
+  background-color: var(--color-green);
+  color: var(--color-background);
+  transform: translateY(-2px);
+}
+
+button,
+input[type="submit"],
+.action-link,
+.site-nav-list a {
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+button:enabled,
+input[type="submit"]:enabled {
+  cursor: pointer;
 }
 
 .action-link:focus-visible {
@@ -150,6 +169,13 @@
 
 .action-link:active {
   background-color: var(--color-light-gray);
+  color: var(--color-charcoal);
+  transform: translateY(0);
+}
+
+button:enabled:active,
+input[type="submit"]:enabled:active {
+  transform: translateY(0);
 }
 
 .hero,
@@ -178,6 +204,12 @@
 
 .hero .action-link:focus-visible {
   outline-color: var(--color-background);
+}
+
+.hero .action-link:hover,
+.hero .action-link:focus-visible {
+  background-color: var(--color-background);
+  color: var(--color-green);
 }
 
 .hero-image,
@@ -329,10 +361,6 @@
   cursor: pointer;
 }
 
-.booking-submit:hover:enabled {
-  text-decoration: underline;
-}
-
 .booking-submit:active:enabled {
   color: var(--color-background);
   background-color: var(--color-green);
@@ -341,6 +369,71 @@
 .booking-submit:disabled {
   opacity: 0.55;
   cursor: not-allowed;
+}
+
+button:disabled,
+input[type="submit"]:disabled {
+  cursor: not-allowed;
+  transform: none;
+}
+
+.page-shell .specials-grid {
+  margin-top: 1.5rem;
+  text-align: left;
+}
+
+.special-content .dish-category {
+  margin: 0 0 0.75rem;
+  color: var(--color-green);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.special-heading h2 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.about-image {
+  display: block;
+  width: 100%;
+  max-height: 24rem;
+  object-fit: cover;
+  border-radius: var(--radius-ui);
+}
+
+.info-panel {
+  margin-top: 2rem;
+  padding: clamp(1rem, 3vw, 2rem);
+  background-color: var(--color-light-gray);
+  border-radius: var(--radius-ui);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button,
+  input[type="submit"],
+  .action-link,
+  .site-nav-list a {
+    transition: none;
+    transform: none;
+  }
+
+  .action-link:hover,
+  .action-link:focus-visible,
+  button:enabled:hover,
+  button:enabled:focus-visible,
+  input[type="submit"]:enabled:hover,
+  input[type="submit"]:enabled:focus-visible {
+    transform: none;
+  }
 }
 
 .booking-form input:user-invalid,
