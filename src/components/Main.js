@@ -1,3 +1,4 @@
+/* global fetchAPI */
 import { useReducer } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import HomePage from '../pages/HomePage';
@@ -8,11 +9,15 @@ import OrderOnlinePage from '../pages/OrderOnlinePage';
 import LoginPage from '../pages/LoginPage';
 
 export function initializeTimes() {
-  return ['17:00', '18:00', '19:00', '20:00', '21:00', '22:00'];
+  return fetchAPI(new Date());
 }
 
-export function updateTimes(state) {
-  // Keep the supplied times unchanged until date-dependent logic is introduced.
+export function updateTimes(state, action) {
+  if (action.type === 'UPDATE_DATE' && action.date) {
+    // Parse as a local calendar date so time zones cannot shift the chosen day.
+    const [year, month, day] = action.date.split('-').map(Number);
+    return fetchAPI(new Date(year, month - 1, day));
+  }
   return state;
 }
 

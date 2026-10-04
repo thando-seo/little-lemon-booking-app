@@ -61,3 +61,13 @@ test('date changes dispatch the selected date while keeping local date state', (
   expect(screen.getByLabelText('Choose date')).toHaveValue('2026-11-15');
   expect(dispatch).toHaveBeenCalledWith({ type: 'UPDATE_DATE', date: '2026-11-15' });
 });
+
+test('changing the date displays the times returned by the API', () => {
+  render(<MemoryRouter initialEntries={['/booking']}><App /></MemoryRouter>);
+  global.fetchAPI.mockReturnValue(['18:30', '20:30']);
+  fireEvent.change(screen.getByLabelText('Choose date'), { target: { value: '2026-11-15' } });
+  const options = within(screen.getByLabelText('Choose time')).getAllByRole('option');
+  expect(options.map((option) => option.value)).toEqual(['18:30', '20:30']);
+  expect(screen.getByLabelText('Choose time')).toHaveValue('18:30');
+  expect(global.fetchAPI).toHaveBeenLastCalledWith(new Date(2026, 10, 15));
+});

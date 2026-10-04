@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function BookingForm({ availableTimes, dispatch }) {
   const [date, setDate] = useState('');
   const [time, setTime] = useState(availableTimes[0]);
   const [guests, setGuests] = useState(1);
   const [occasion, setOccasion] = useState('Birthday');
+
+  useEffect(() => {
+    if (!availableTimes.includes(time)) {
+      setTime(availableTimes[0] || '');
+    }
+  }, [availableTimes, time]);
 
   function handleDateChange(event) {
     const selectedDate = event.target.value;
