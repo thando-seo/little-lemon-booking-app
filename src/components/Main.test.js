@@ -4,6 +4,13 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import App from '../App';
 
+beforeEach(() => {
+  jest.useFakeTimers('modern');
+  jest.setSystemTime(new Date(2026, 9, 4, 12));
+});
+
+afterEach(() => jest.useRealTimers());
+
 test('initializeTimes calls fetchAPI with today and returns its available times', () => {
   const apiTimes = ['17:30', '19:00'];
   global.fetchAPI.mockReturnValue(apiTimes);

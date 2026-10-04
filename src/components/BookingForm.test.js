@@ -5,6 +5,13 @@ import App from '../App';
 import BookingForm from './BookingForm';
 import { initializeTimes } from './Main';
 
+beforeEach(() => {
+  jest.useFakeTimers('modern');
+  jest.setSystemTime(new Date(2026, 9, 4, 12));
+});
+
+afterEach(() => jest.useRealTimers());
+
 test('renders the BookingForm Choose date label', () => {
   render(<BookingForm availableTimes={initializeTimes()} dispatch={jest.fn()} />);
   expect(screen.getByText('Choose date', { exact: true })).toBeInTheDocument();
@@ -78,4 +85,66 @@ test('changing the date displays the times returned by the API', () => {
   expect(options.map((option) => option.value)).toEqual(['18:30', '20:30']);
   expect(screen.getByLabelText('Choose time')).toHaveValue('18:30');
   expect(global.fetchAPI).toHaveBeenLastCalledWith(new Date(2026, 10, 15));
+});
+
+test('all fields are required and date uses today as its local minimum', () => {
+  render(<BookingForm availableTimes={['17:00']} dispatch={jest.fn()} />);
+  ['Choose date', 'Choose time', 'Number of guests', 'Occasion'].forEach((label) => {
+    expect(screen.getByLabelText(label)).toBeRequired();
+  });
+  expect(screen.getByLabelText('Choose date')).toHaveAttribute('min', '2026-10-04');
+  expect(screen.getByRole('button', { name: 'Make Your Reservation' })).toBeDisabled();
+});
+
+test.each(['', '0', '11', '1.5'])('invalid guest value %s disables submission and cannot bypass the submit guard', (guests) => {
+  const submitForm = jest.fn();
+  render(<BookingForm availableTimes={['17:00']} dispatch={jest.fn()} submitForm={submitForm} />);
+  fireEvent.change(screen.getByLabelText('Choose date'), { target: { value: '2026-11-18' } });
+  fireEvent.change(screen.getByLabelText('Number of guests'), { target: { value: guests } });
+  expect(screen.getByRole('button', { name: 'Make Your Reservation' })).toBeDisabled();
+  fireEvent.submit(screen.getByRole('form'));
+  expect(submitForm).not.toHaveBeenCalled();
+});
+
+test.each(['', '2026-10-03'])('invalid date %s prevents submission', (date) => {
+  const submitForm = jest.fn();
+  render(<BookingForm availableTimes={['17:00']} dispatch={jest.fn()} submitForm={submitForm} />);
+  fireEvent.change(screen.getByLabelText('Choose date'), { target: { value: date } });
+  expect(screen.getByRole('button', { name: 'Make Your Reservation' })).toBeDisabled();
+  fireEvent.submit(screen.getByRole('form'));
+  expect(submitForm).not.toHaveBeenCalled();
+});
+
+test.each(['1', '10'])('today and guest limit %s allow valid submission', (guests) => {
+  const submitForm = jest.fn();
+  render(<BookingForm availableTimes={['17:00']} dispatch={jest.fn()} submitForm={submitForm} />);
+  fireEvent.change(screen.getByLabelText('Choose date'), { target: { value: '2026-10-04' } });
+  fireEvent.change(screen.getByLabelText('Number of guests'), { target: { value: guests } });
+  expect(screen.getByRole('button', { name: 'Make Your Reservation' })).toBeEnabled();
+  fireEvent.submit(screen.getByRole('form'));
+  expect(submitForm).toHaveBeenCalledWith({ date: '2026-10-04', time: '17:00', guests: Number(guests), occasion: 'Birthday' });
+});
+
+test('availability changes synchronize time and empty availability prevents submission', () => {
+  const submitForm = jest.fn();
+  const props = { dispatch: jest.fn(), submitForm };
+  const { rerender } = render(<BookingForm {...props} availableTimes={['17:00']} />);
+  fireEvent.change(screen.getByLabelText('Choose date'), { target: { value: '2026-11-18' } });
+  rerender(<BookingForm {...props} availableTimes={['20:00']} />);
+  expect(screen.getByLabelText('Choose time')).toHaveValue('20:00');
+  expect(screen.getByRole('button', { name: 'Make Your Reservation' })).toBeEnabled();
+  rerender(<BookingForm {...props} availableTimes={[]} />);
+  expect(screen.getByRole('button', { name: 'Make Your Reservation' })).toBeDisabled();
+  fireEvent.submit(screen.getByRole('form'));
+  expect(submitForm).not.toHaveBeenCalled();
+});
+
+test('empty occasion prevents submission', () => {
+  const submitForm = jest.fn();
+  render(<BookingForm availableTimes={['17:00']} dispatch={jest.fn()} submitForm={submitForm} />);
+  fireEvent.change(screen.getByLabelText('Choose date'), { target: { value: '2026-11-18' } });
+  fireEvent.change(screen.getByLabelText('Occasion'), { target: { value: '' } });
+  expect(screen.getByRole('button', { name: 'Make Your Reservation' })).toBeDisabled();
+  fireEvent.submit(screen.getByRole('form'));
+  expect(submitForm).not.toHaveBeenCalled();
 });
