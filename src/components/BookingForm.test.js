@@ -32,6 +32,7 @@ test('booking route renders labeled fields with sensible initial values', () => 
 
 test('renders all six available time options', () => {
   render(<BookingForm availableTimes={initializeTimes()} dispatch={jest.fn()} />);
+  expect(screen.getByLabelText('Choose time').tagName).toBe('SELECT');
   const options = within(screen.getByLabelText('Choose time')).getAllByRole('option');
   expect(options.map((option) => option.value)).toEqual([
     '17:00', '18:00', '19:00', '20:00', '21:00', '22:00',
@@ -61,6 +62,7 @@ test('submission prevents browser reload and passes the controlled form values',
   userEvent.type(screen.getByLabelText('Number of guests'), '4');
   userEvent.selectOptions(screen.getByLabelText('Occasion'), 'Anniversary');
   const form = screen.getByRole('form', { name: 'Table reservation' });
+  expect(screen.getByRole('button', { name: 'Make Your Reservation' })).toBeEnabled();
   const submitEvent = new Event('submit', { bubbles: true, cancelable: true });
   fireEvent(form, submitEvent);
   expect(submitEvent.defaultPrevented).toBe(true);
@@ -87,12 +89,22 @@ test('changing the date displays the times returned by the API', () => {
   expect(global.fetchAPI).toHaveBeenLastCalledWith(new Date(2026, 10, 15));
 });
 
-test('all fields are required and date uses today as its local minimum', () => {
+test('fields have HTML5 validation attributes and the expected occasion options', () => {
   render(<BookingForm availableTimes={['17:00']} dispatch={jest.fn()} />);
   ['Choose date', 'Choose time', 'Number of guests', 'Occasion'].forEach((label) => {
     expect(screen.getByLabelText(label)).toBeRequired();
   });
+  expect(screen.getByLabelText('Choose date')).toHaveAttribute('type', 'date');
   expect(screen.getByLabelText('Choose date')).toHaveAttribute('min', '2026-10-04');
+  expect(screen.getByLabelText('Number of guests')).toHaveAttribute('type', 'number');
+  const occasion = screen.getByLabelText('Occasion');
+  expect(occasion.tagName).toBe('SELECT');
+  expect(within(occasion).getAllByRole('option').map((option) => ({
+    value: option.value, label: option.textContent,
+  }))).toEqual([
+    { value: 'Birthday', label: 'Birthday' },
+    { value: 'Anniversary', label: 'Anniversary' },
+  ]);
   expect(screen.getByRole('button', { name: 'Make Your Reservation' })).toBeDisabled();
 });
 
